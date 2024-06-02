@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.BeforeMethod;
+import org.testng.asserts.SoftAssert;
 import pages.DashBoardPage;
 import pages.LoginPage;
 import utils.CommonMethods;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginTest extends CommonMethods {
 
 
-    @Test(groups = {"smoke"})
+    @Test()
     public void adminLogin()  {
         LoginPage loginPage = new LoginPage();
         sendText(loginPage.usernameBox, ConfigReader.getPropertyValue("username"));//null?
@@ -38,6 +39,7 @@ public class LoginTest extends CommonMethods {
     @Test(groups = {"smoke"})
     public void adminLoginXLSX()  {
         LoginPage loginPage = new LoginPage();
+        SoftAssert softAssert =new SoftAssert();
 
         List<Map<String,String>> loginFromExcel = ExcelReading.excelIntoListMap(Constants.TESTDATA_FILEPATH,"LoginData");
         Iterator <Map<String,String>> it = loginFromExcel.iterator();
@@ -51,6 +53,11 @@ public class LoginTest extends CommonMethods {
 
         DashBoardPage dashBoardPage = new DashBoardPage();
         Assert.assertTrue(dashBoardPage.inputCod.isDisplayed());
+        String expectedTextInputCod = "Подтвердить другим способом";
+        String textInputCod = dashBoardPage.inputCod.getText();
+        System.out.println(textInputCod);
+        softAssert.assertEquals(textInputCod,expectedTextInputCod);
+        softAssert.assertAll();
 
     }
 
